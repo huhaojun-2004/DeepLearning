@@ -1,0 +1,22 @@
+*.npy
+*.gz
+*.zip
+*.tar
+*.png
+mnist-pngs/
+
+# --- 权重与模型 ---
+# 忽略训练好的参数文件
+checkpoints/
+
+# --- Python 缓存 ---
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# --- IDE 配置文件 ---
+.vscode/
+.idea/
+.DS_Store
+
