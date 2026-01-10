@@ -10,7 +10,7 @@ from utils.checkpoint import save_model_npz
 def main():
 
 
-    batch_size = 256
+    batch_size = 128
     epochs = 80
     lr = 0.1
 
