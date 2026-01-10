@@ -10,7 +10,7 @@ from utils.checkpoint import save_model_npz
 def main():
 
 
-    batch_size = 512
+    batch_size = 2048
     epochs = 80
     lr = 0.1
 
@@ -24,7 +24,14 @@ def main():
     train_loader = DataLoadwer(X_train,y_train,batch_size=batch_size,shuffle=True,drop_last=True)
     test_loader = DataLoadwer(X_test, y_test, batch_size=batch_size, shuffle=True, drop_last=True)
 
-    model = Model([Flatten(),Linear(784,1024),ReLU(),Dropout(0.2),Linear(1024,512),ReLU(),Dropout(0.2),Linear(512,256),ReLU(),Linear(256,10)])
+    model = Model([Flatten(),
+                   Linear(784,1024),
+                   ReLU(),Dropout(0.2),
+                   Linear(1024,512),
+                   ReLU(),Dropout(0.2),
+                   Linear(512,256),
+                   ReLU(),
+                   Linear(256,10)])
 
     loss_fn = SoftmaxCrossEntropyLoss()
     opt = SGD(model.layers,lr=lr,weight_decay=1e-4)

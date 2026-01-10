@@ -2,12 +2,12 @@ import numpy as np
 from PIL import Image
 
 from model import Model
-from layers import Linear, ReLU, Faltten
+from layers import Linear, ReLU, Flatten
 from utils.checkpoint import load_model_npz
 
 def build_model():
     # 和你训练时保持一致
-    return Model([Faltten(),Linear(784,1024),ReLU(),Linear(1024,512),ReLU(),Linear(512,256),ReLU(),Linear(256,10)])
+    return Model([Flatten(),Linear(784,1024),ReLU(),Linear(1024,512),ReLU(),Linear(512,256),ReLU(),Linear(256,10)])
 def preprocess_mnist_image(img_path: str, invert: bool = False):
     """
     返回 X: (1, 28, 28) float32, 范围 [0,1]
