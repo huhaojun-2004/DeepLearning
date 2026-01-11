@@ -20,12 +20,13 @@ class ProgressBar:
         bar = "=" * filled + ">" + "." * (self.width - filled - 1)
 
         elapsed = time.time() - self.start_time
+        total_time = elapsed/(ratio)
 
         msg = (
             f"\r{self.prefix} "
             f"[{bar}] {step}/{self.total} "
             f"{ratio*100:5.1f}% "
-            f"({elapsed:.1f}s) {postfix}"
+            f"({elapsed:.1f}s /{total_time:.0f}s) {postfix}"
         )
 
         sys.stdout.write(msg)

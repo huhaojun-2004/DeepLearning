@@ -2,7 +2,7 @@ import numpy as np
 from utils import ProgressBar,load_mnist_from_npy,accuracy_from_logits
 from data.dataloader import DataLoadwer
 from model import Model
-from layers import Linear,ReLU,Flatten,Dropout
+from layers import Linear,ReLU,Flatten,Dropout,Conv2D
 from losses.softmaxcrossentropy import SoftmaxCrossEntropyLoss
 from optim.sgd import SGD
 from utils.checkpoint import save_model_npz
@@ -10,13 +10,16 @@ from utils.checkpoint import save_model_npz
 def main():
 
 
-    batch_size = 2048
-    epochs = 80
+    batch_size = 256
+    epochs = 200
     lr = 0.1
 
     # -------- 1 读数据（返回 NumPy）--------
     X_train,y_train = load_mnist_from_npy("mnist-pngs",split="train")
     X_test,y_test = load_mnist_from_npy("mnist-pngs",split="test")
+
+    X_train = X_train[:,None,:,:]
+    X_test = X_test[:, None, :, :]
 
     print("Train:", X_train.shape, y_train.shape, X_train.dtype, y_train.dtype)
     print("Test: ", X_test.shape, y_test.shape, X_test.dtype, y_test.dtype)
@@ -24,14 +27,23 @@ def main():
     train_loader = DataLoadwer(X_train,y_train,batch_size=batch_size,shuffle=True,drop_last=True)
     test_loader = DataLoadwer(X_test, y_test, batch_size=batch_size, shuffle=True, drop_last=True)
 
-    model = Model([Flatten(),
-                   Linear(784,1024),
-                   ReLU(),Dropout(0.2),
-                   Linear(1024,512),
-                   ReLU(),Dropout(0.2),
-                   Linear(512,256),
-                   ReLU(),
-                   Linear(256,10)])
+    model = Model([
+        Conv2D(1, 16, 3, stride=1, padding=1),  # (N,16,28,28)
+        ReLU(),
+        Conv2D(16, 16, 3, stride=2, padding=1),  # (N,16,14,14)  ↓downsample
+        ReLU(),
+
+        Conv2D(16, 32, 3, stride=1, padding=1),  # (N,32,14,14)
+        ReLU(),
+        Conv2D(32, 32, 3, stride=2, padding=1),  # (N,32,7,7)    ↓downsample
+        ReLU(),
+
+        Flatten(),  # (N,1568)
+        Linear(32 * 7 * 7, 128),
+        ReLU(),
+        Dropout(p=0.2),
+        Linear(128, 10),
+    ])
 
     loss_fn = SoftmaxCrossEntropyLoss()
     opt = SGD(model.layers,lr=lr,weight_decay=1e-4)
