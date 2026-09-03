@@ -40,3 +40,5 @@ class Layer(ABC):
             if g is None:
                 continue
             g[...] = 0
+
+    
